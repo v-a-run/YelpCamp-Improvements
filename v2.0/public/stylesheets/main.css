@@ -1,0 +1,50 @@
+html, body{
+	height : 100%;
+	/* background : #415659; */
+}
+
+.whole-content{
+	min-height : 100%;
+}
+
+.thumbnail img {
+    width: 100%;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+#delete-form{
+	display : inline;
+}
+
+.alert{
+	margin-top : 0.5em;
+}
+
+.footer{
+	position : relative;
+	background-color : #f0f2f5;
+	height : 125px;
+}
+
+.footer .footer-content{
+	text-align : center;
+	border-top : 1px solid grey;
+	border-bottom : 1px solid grey;
+}
+
+.footer .footer-content .about{
+	margin-top : 15px;
+}
+
+.footer .footer-bottom {
+	position : absolute;
+	background-color : #f0f2f5;
+	height : 50px;
+	width : 100%;
+	text-align : center;
+	bottom : 0px;
+	left : 0px;
+}
