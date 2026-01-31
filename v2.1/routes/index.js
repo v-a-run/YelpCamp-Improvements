@@ -1,78 +1,71 @@
-var express = require('express'),
-	router  = express.Router(),
-	passport = require('passport'),
-	User = require("../models/user")
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
+const User = require("../models/user");
 
-	// MAIN Route
-	router.get("/", function(req, res){
-		res.render("landing");
-	});
+// MAIN Route
+router.get("/", (req, res) => {
+  res.render("landing");
+});
 
 //########### AUTH ROUTES ##############//
 
-	// Show SIGN UP form
-	router.get("/register", function(req, res){
-		// req.flash("error", err.message);
-		res.render("register");
-	});
-
-	// SIGN UP logic
-	// router.post("/register", function(req, res){
-	// 	var newUser = new User({username : req.body.username});
-	// 	User.register(newUser, req.body.password, function(err, user){
-	// 		if(err){
-	// 			req.flash("error", err.message);
-	// 			//console.log(err);
-	// 			return res.render("register");
-	// 		} else{
-	// 			passport.authenticate("local")(req, res, function(err, user){
-	// 				req.flash("success", "Signed Up Successfully, Welcome " + user.username);
-	// 				res.redirect("/campgrounds");
-	// 			});
-	// 		}
-	// 	});
-	// });
-	router.post("/register", function(req, res){
-    var newUser = new User({username: req.body.username});
-    User.register(newUser, req.body.password, function(err, user){
-        if(err){
-            console.log(err);
-            req.flash("error", err.message);
-            return res.render("register");
-        }
-        passport.authenticate("local")(req, res, function(){
-           req.flash("success", "Successfully Signed Up! Nice to meet you " + req.body.username);
-           res.redirect("/campgrounds"); 
-        });
-    });
+// Show SIGN UP form
+router.get("/register", (req, res) => {
+  res.render("register");
 });
 
-	// Show LOG IN form
-	router.get("/login", function(req, res){
-		res.render("login");
-	});
+// SIGN UP logic
+router.post("/register", (req, res) => {
+  const newUser = new User({ username: req.body.username });
 
-	// LOG IN logic
-	router.post("/login", function(req, res, next){
-		passport.authenticate("local", 
-	{
-		successRedirect : "/campgrounds",
-		failureRedirect : "/login",
-		failureFlash 	: true,
-		successFlash	: "Welcome Back, " + req.body.username + " !!"
-	})(req, res);
-	});
+  User.register(newUser, req.body.password, (err, user) => {
+    if (err) {
+      console.log(err);
+      req.flash("error", err.message);
+      return res.render("register");
+    }
 
-	// LOGOUT logic  //
-	router.get("/logout", function(req, res){
-		req.logout();
-		req.flash("success", "You are Logged Out. See ya later !")
-		res.redirect("/campgrounds");
-	});
+    passport.authenticate("local")(req, res, () => {
+      req.flash(
+        "success",
+        "Successfully Signed Up! Nice to meet you " + user.username
+      );
+      res.redirect("/campgrounds");
+    });
+  });
+});
 
-	// Show ABOUT route //
-	router.get("/about", function(req,res){
-		res.render("about");
-	})
+// Show LOG IN form
+router.get("/login", (req, res) => {
+  res.render("login");
+});
+
+// LOG IN logic
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/campgrounds",
+    failureRedirect: "/login",
+    failureFlash: true,
+    successFlash: true,
+  })
+);
+
+// LOGOUT logic (FIXED)
+router.get("/logout", (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    req.flash("success", "You are Logged Out. See ya later!");
+    res.redirect("/campgrounds");
+  });
+});
+
+// ABOUT route
+router.get("/about", (req, res) => {
+  res.render("about");
+});
 
 module.exports = router;
